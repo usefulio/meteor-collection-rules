@@ -180,7 +180,6 @@ if (Meteor.isServer) {
 		});
 		CollectionRule.allowUpdate(TestCollection, /*{
 			name:*/ function (doc) {
-				console.log('update', doc);
 				return !doc.name;
 			}
 			/*, comment: function (doc) {
@@ -190,6 +189,18 @@ if (Meteor.isServer) {
 
 		CollectionRule.allowRemove(TestCollection, function (doc) {
 			return !doc.name;
+		});
+
+		CollectionRule.attachSchema(TestCollection, {
+			name: 'test collection'
+			, schema: {
+				age: function (val) {
+					if (val) {
+						return val > 10;
+					}
+					return true;
+				}
+			}
 		});
 
 		TestCollection.insert({
@@ -245,6 +256,34 @@ if (Meteor.isClient) {
 			next();
 		});
 	});
+	Tinytest.addAsync('CollectionRules - allows valid schema on insert', function (test, next) {
+		TestCollection.insert({name: 'joe', age: 11}, function (err, result) {
+			test.isFalse(!!err);
+			id = result;
+			next();
+		});
+	});
+	Tinytest.addAsync('CollectionRules - deines invalid schema on insert', function (test, next) {
+		TestCollection.insert({name: 'joe', age: 9}, function (err, result) {
+			test.isTrue(!!err);
+			test.equal(err && err.error, 403);
+			next();
+		});
+	});
+	Tinytest.addAsync('CollectionRules - allows valid schema on update', function (test, next) {
+		TestCollection.update(id, {$set: {age: 15}, $unset: {name: 'joe'}}, function (err, result) {
+			test.isTrue(!err);
+			next();
+		});
+	});
+	Tinytest.addAsync('CollectionRules - denies invalid schema on update', function (test, next) {
+		TestCollection.update(id, {$set: {age: 5}}, function (err, result) {
+			test.isTrue(err);
+			test.equal(err && err.error, 403);
+			next();
+		});
+	});
+
 }
 // XXX test collection allow rules
 // allowInsert, allowUpdate, allowDelete

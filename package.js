@@ -3,7 +3,7 @@ Package.describe({
 });
 
 Package.on_use(function (api, where) {
-  api.use(['rules', 'underscore']);
+  api.use(['rules', 'schema', 'underscore']);
 
   api.add_files('collection-rules.js', ['client', 'server']);
 

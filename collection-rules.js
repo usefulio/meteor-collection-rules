@@ -75,10 +75,8 @@ CollectionRule.allowInsert = function (collection, rules) {
 CollectionRule.allowUpdate = function (collection, rules) {
 	rules = _.toArray(arguments).slice(1);
 	var rule = new CollectionRule(rules);
-	console.log(rule.rules);
 	collection.allow({
 		update: function (userId, doc, fieldNames, modifier) {
-			console.log('doc', doc)
 			return rule.allowable.apply(rule, arguments);
 		}
 	});
@@ -90,6 +88,20 @@ CollectionRule.allowRemove = function (collection, rules) {
 	collection.allow({
 		remove: function (userId, doc) {
 			return rule.allowable.apply(rule, arguments);
+		}
+	});
+};
+
+CollectionRule.attachSchema = function (collection, schema) {
+	if (!(schema instanceof Schema)) schema = new Schema(schema);
+	var rule = new CollectionRule(schema);
+	collection.schema = schema;
+	collection.deny({
+		insert: function (userId, doc) {
+			return !rule.allowable.apply(rule, arguments);
+		}
+		, update: function () {
+			return !rule.allowable.apply(rule, arguments);
 		}
 	});
 };
