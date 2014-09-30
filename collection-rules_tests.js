@@ -266,7 +266,7 @@ if (Meteor.isClient) {
 	Tinytest.addAsync('CollectionRules - deines invalid schema on insert', function (test, next) {
 		TestCollection.insert({name: 'joe', age: 9}, function (err, result) {
 			test.isTrue(!!err);
-			test.equal(err && err.error, 403);
+			test.equal(err && err.reason, "test collection age is invalid");
 			next();
 		});
 	});
@@ -279,7 +279,7 @@ if (Meteor.isClient) {
 	Tinytest.addAsync('CollectionRules - denies invalid schema on update', function (test, next) {
 		TestCollection.update(id, {$set: {age: 5}}, function (err, result) {
 			test.isTrue(err);
-			test.equal(err && err.error, 403);
+			test.equal(err && err.reason, "test collection age is invalid");
 			next();
 		});
 	});

@@ -96,14 +96,18 @@ CollectionRule.attachSchema = function (collection, schema) {
 	if (!(schema instanceof Schema)) schema = new Schema(schema);
 	var rule = new CollectionRule(schema);
 	collection.schema = schema;
-	collection.deny({
-		insert: function (userId, doc) {
-			return !rule.allowable.apply(rule, arguments);
-		}
-		, update: function () {
-			return !rule.allowable.apply(rule, arguments);
-		}
-	});
+	if (Meteor.isServer) {
+		collection.deny({
+			insert: function (userId, doc) {
+				rule.allow.apply(rule, arguments);
+				return false;
+			}
+			, update: function () {
+				rule.allow.apply(rule, arguments);
+				return false;
+			}
+		});
+	}
 };
 
 CollectionRule.prototype = _.clone(Rule.prototype);
