@@ -14,7 +14,7 @@ Package.on_use(function (api, where) {
 });
 
 Package.on_test(function (api) {
-  api.use('collection-rules');
+  api.use('cwohlman:collection-rules');
 
   api.use(['autopublish', 'schema', 'rules', 'tinytest', 'test-helpers']);
 
