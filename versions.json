@@ -1,16 +1,16 @@
 {
   "dependencies": [
     [
+      "cwohlman:rules",
+      "0.0.1"
+    ],
+    [
+      "cwohlman:schema",
+      "0.0.1"
+    ],
+    [
       "meteor",
-      "1.1.0"
-    ],
-    [
-      "rules",
-      "0.0.1"
-    ],
-    [
-      "schema",
-      "0.0.1"
+      "1.1.1"
     ],
     [
       "underscore",
@@ -18,6 +18,6 @@
     ]
   ],
   "pluginDependencies": [],
-  "toolVersion": "meteor-tool@1.0.31",
+  "toolVersion": "meteor-tool@1.0.33",
   "format": "1.0"
 }

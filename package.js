@@ -16,7 +16,7 @@ Package.on_use(function (api, where) {
 Package.on_test(function (api) {
   api.use('cwohlman:collection-rules');
 
-  api.use(['autopublish', 'schema', 'rules', 'tinytest', 'test-helpers']);
+  api.use(['autopublish', 'cwohlman:schema', 'cwohlman:rules', 'tinytest', 'test-helpers']);
 
   api.add_files('collection-rules_tests.js', ['client', 'server']);
 });
