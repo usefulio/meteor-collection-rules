@@ -38,7 +38,33 @@ CollectionRule = function (rules) {
 	});
 };
 
-CollectionRule.makeContext = function(userId, doc, fieldNames, modifier) {
+CollectionRule.prototype = _.clone(Rule.prototype);
+
+CollectionRule.prototype.allow = function (doc, userId, fieldNames, modifier) {
+	var context = CollectionRules.makeContext(doc, userId, fieldNames, modifier);
+	return this.check(context.doc, context);
+};
+
+CollectionRule.prototype.allowable = function(doc, userId, fieldNames, modifier) {
+	var context = CollectionRules.makeContext(doc, userId, fieldNames, modifier);
+	return this.match(context.doc, context);
+};
+
+CollectionRule.prototype.allowErrors = function (doc, userId, fieldNames, modifier) {
+	var context = CollectionRules.makeContext(doc, userId, fieldNames, modifier);
+	return this.errors(context.doc, context);
+};
+
+
+// Public Api
+CollectionRules = {};
+
+CollectionRules.create = function (rules) {
+	rules = _.toArray(arguments);
+	return new CollectionRule(rules);
+};
+
+CollectionRules.makeContext = function(userId, doc, fieldNames, modifier) {
 	var original = doc;
 	if (modifier) {
 		var c = new Meteor.Collection(null);
@@ -62,7 +88,7 @@ CollectionRule.makeContext = function(userId, doc, fieldNames, modifier) {
 	};
 };
 
-CollectionRule.allowInsert = function (collection, rules) {
+CollectionRules.allowInsert = function (collection, rules) {
 	rules = _.toArray(arguments).slice(1);
 	var rule = new CollectionRule(rules);
 	collection.allow({
@@ -72,7 +98,7 @@ CollectionRule.allowInsert = function (collection, rules) {
 	});
 };
 
-CollectionRule.allowUpdate = function (collection, rules) {
+CollectionRules.allowUpdate = function (collection, rules) {
 	rules = _.toArray(arguments).slice(1);
 	var rule = new CollectionRule(rules);
 	collection.allow({
@@ -82,7 +108,7 @@ CollectionRule.allowUpdate = function (collection, rules) {
 	});
 };
 
-CollectionRule.allowRemove = function (collection, rules) {
+CollectionRules.allowRemove = function (collection, rules) {
 	rules = _.toArray(arguments).slice(1);
 	var rule = new CollectionRule(rules);
 	collection.allow({
@@ -92,7 +118,7 @@ CollectionRule.allowRemove = function (collection, rules) {
 	});
 };
 
-CollectionRule.attachSchema = function (collection, schema) {
+CollectionRules.attachSchema = function (collection, schema) {
 	if (!(schema instanceof Schema)) schema = new Schema(schema);
 	var rule = new CollectionRule(schema);
 	collection.schema = schema;
@@ -108,21 +134,4 @@ CollectionRule.attachSchema = function (collection, schema) {
 			}
 		});
 	}
-};
-
-CollectionRule.prototype = _.clone(Rule.prototype);
-
-CollectionRule.prototype.allow = function (doc, userId, fieldNames, modifier) {
-	var context = CollectionRule.makeContext(doc, userId, fieldNames, modifier);
-	return this.check(context.doc, context);
-};
-
-CollectionRule.prototype.allowable = function(doc, userId, fieldNames, modifier) {
-	var context = CollectionRule.makeContext(doc, userId, fieldNames, modifier);
-	return this.match(context.doc, context);
-};
-
-CollectionRule.prototype.allowErrors = function (doc, userId, fieldNames, modifier) {
-	var context = CollectionRule.makeContext(doc, userId, fieldNames, modifier);
-	return this.errors(context.doc, context);
 };

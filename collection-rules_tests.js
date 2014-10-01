@@ -1,5 +1,5 @@
 Tinytest.add('CollectionRules - acts like a rule', function (test) {
-	var rule = new CollectionRule(new Rule(function (doc) {
+	var rule = CollectionRules.create(new Rule(function (doc) {
 		return !!doc.userId;
 	}, 'must have a userId'));
 
@@ -10,7 +10,7 @@ Tinytest.add('CollectionRules - acts like a rule', function (test) {
 });
 
 Tinytest.add('CollectionRules - respects context object', function (test) {
-	var rule = new CollectionRule(new Rule(function (doc) {
+	var rule = CollectionRules.create(new Rule(function (doc) {
 		return !!doc.userId || this.ignoreErrors;
 	}, 'must have a userId'));
 	var dontThrowFlag = {ignoreErrors: true};
@@ -23,7 +23,7 @@ Tinytest.add('CollectionRules - respects context object', function (test) {
 });
 
 Tinytest.add('CollectionRules - basic api', function (test) {
-	var rule = new CollectionRule(new Rule(function (doc) {
+	var rule = CollectionRules.create(new Rule(function (doc) {
 		return !!doc.userId && doc.userId == this.userId;
 	}, 'must be owner'));
 
@@ -47,14 +47,14 @@ Tinytest.add('CollectionRules - basic api', function (test) {
 	test.isFalse(rule.allowErrors(id, matchingDoc)[0]);
 	test.equal(rule.allowErrors(id, missingDoc)[0].message, 'must be owner');
 
-	var context = CollectionRule.makeContext(id, matchingDoc);
+	var context = CollectionRules.makeContext(id, matchingDoc);
 	var fieldNames = ['userId'];
 
 	test.equal(context.userId, id);
 	test.equal(context.doc, matchingDoc);
 	test.equal(context.fieldNames[0], fieldNames[0]);
 
-	context = CollectionRule.makeContext(id, matchingDoc, fieldNames, {});
+	context = CollectionRules.makeContext(id, matchingDoc, fieldNames, {});
 
 	test.equal(context.fieldNames, fieldNames);
 });
@@ -90,25 +90,25 @@ Tinytest.add('CollectionRules - handles update modifier', function (test) {
 		}
 	};
 
-	test.equal(CollectionRule.makeContext(id).userId, 'someId');
-	test.equal(CollectionRule.makeContext(id, doc).doc.userId, 'someId');
-	test.equal(CollectionRule.makeContext(id, doc).original.userId, 'someId');
+	test.equal(CollectionRules.makeContext(id).userId, 'someId');
+	test.equal(CollectionRules.makeContext(id, doc).doc.userId, 'someId');
+	test.equal(CollectionRules.makeContext(id, doc).original.userId, 'someId');
 
-	test.equal(CollectionRule.makeContext(id, doc, [], setter).doc.userId, 'otherId');
-	test.equal(CollectionRule.makeContext(id, doc, [], setter).original.userId, 'someId');
+	test.equal(CollectionRules.makeContext(id, doc, [], setter).doc.userId, 'otherId');
+	test.equal(CollectionRules.makeContext(id, doc, [], setter).original.userId, 'someId');
 
-	test.isFalse(!!CollectionRule.makeContext(id, doc, [], unsetter).doc.userId);
-	test.equal(CollectionRule.makeContext(id, doc, [], unsetter).original.userId, 'someId');
+	test.isFalse(!!CollectionRules.makeContext(id, doc, [], unsetter).doc.userId);
+	test.equal(CollectionRules.makeContext(id, doc, [], unsetter).original.userId, 'someId');
 	
-	test.equal(CollectionRule.makeContext(id, doc, [], pusher).doc.items[0].name, 'joe');
-	test.isFalse(CollectionRule.makeContext(id, doc, [], pusher).original.items);
+	test.equal(CollectionRules.makeContext(id, doc, [], pusher).doc.items[0].name, 'joe');
+	test.isFalse(CollectionRules.makeContext(id, doc, [], pusher).original.items);
 
-	test.equal(CollectionRule.makeContext(id, otherDoc, [], pusher).doc.items[1].name, 'joe');
-	test.isFalse(CollectionRule.makeContext(id, otherDoc, [], pusher).original.items[1]);
+	test.equal(CollectionRules.makeContext(id, otherDoc, [], pusher).doc.items[1].name, 'joe');
+	test.isFalse(CollectionRules.makeContext(id, otherDoc, [], pusher).original.items[1]);
 });
 
 Tinytest.add('CollectionRules - only runs relevant rules', function (test) {
-	var rule = new CollectionRule(function (doc) {
+	var rule = CollectionRules.create(function (doc) {
 		return doc.userId && (doc.userId == this.userId || 'admin' == this.userId);
 	}, {
 		status: function (doc) {
@@ -175,10 +175,10 @@ TestCollection = new Meteor.Collection('test');
 
 if (Meteor.isServer) {
 	try {
-		CollectionRule.allowInsert(TestCollection, function (doc) {
+		CollectionRules.allowInsert(TestCollection, function (doc) {
 			return !!doc.name;
 		});
-		CollectionRule.allowUpdate(TestCollection, /*{
+		CollectionRules.allowUpdate(TestCollection, /*{
 			name:*/ function (doc) {
 				return !doc.name;
 			}
@@ -187,11 +187,11 @@ if (Meteor.isServer) {
 			}
 		}*/);
 
-		CollectionRule.allowRemove(TestCollection, function (doc) {
+		CollectionRules.allowRemove(TestCollection, function (doc) {
 			return !doc.name;
 		});
 
-		CollectionRule.attachSchema(TestCollection, {
+		CollectionRules.attachSchema(TestCollection, {
 			name: 'test collection'
 			, schema: {
 				age: function (val) {
