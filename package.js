@@ -1,9 +1,12 @@
 Package.describe({
-  summary: "REPLACEME - What does this package (or the original one you're wrapping) do?"
+  summary: "Provides a set of helper methods for using the rules package for collection access (i.e. allow deny rules)."
+  , version: "0.1.0"
+  , name: "cwohlman:collection-rules"
+  , git: "https://github.com/cwohlman/meteor-collection-rules.git"
 });
 
 Package.on_use(function (api, where) {
-  api.use(['rules', 'schema', 'underscore']);
+  api.use(['cwohlman:rules', 'cwohlman:schema', 'underscore']);
 
   api.add_files('collection-rules.js', ['client', 'server']);
 
