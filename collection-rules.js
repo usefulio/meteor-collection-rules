@@ -135,3 +135,7 @@ CollectionRules.attachSchema = function (collection, schema) {
 		});
 	}
 };
+
+CollectionRules.mustBeOwner = new Rule(function (doc) {
+	return this.userId && doc.userId == this.userId;
+}, 403, 'must be owner');
