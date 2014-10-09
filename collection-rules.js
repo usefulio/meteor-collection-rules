@@ -67,7 +67,7 @@ CollectionRules.create = function (rules) {
 CollectionRules.makeContext = function(userId, doc, fieldNames, modifier) {
 	var original = doc;
 	if (modifier) {
-		var c = new Meteor.Collection(null);
+		var c = new Mongo.Collection(null);
 
 		// Note we don't really need the id, since any meteor provided doc
 		// will have an id, but we do this incase the function is used
