@@ -1,13 +1,13 @@
 Package.describe({
   summary: "Helper methods to make allow/deny collection rules more powerful."
-  , version: "0.1.0"
+  , version: "0.1.1"
   , name: "cwohlman:collection-rules"
   , git: "https://github.com/cwohlman/meteor-collection-rules.git"
 });
  
 Package.on_use(function (api, where) {
   api.versionsFrom("0.9.3");
-  api.use(['cwohlman:schema@0.1.0', 'cwohlman:rules@0.1.2', 'underscore', 'mongo']);
+  api.use(['cwohlman:schema@0.1.0', 'cwohlman:rules@0.1.3', 'underscore', 'mongo']);
 
   api.add_files('collection-rules.js', ['client', 'server']);
 
