@@ -47,7 +47,11 @@ CollectionRule.prototype.allow = function (doc, userId, fieldNames, modifier) {
 
 CollectionRule.prototype.allowable = function(doc, userId, fieldNames, modifier) {
 	var context = CollectionRules.makeContext(doc, userId, fieldNames, modifier);
-	return this.match(context.doc, context);
+	var result = this.match(context.doc, context);
+	if (!result) {
+		console.log(this.allowErrors(doc, userId, fieldNames, modifier));
+	}
+	return result;
 };
 
 CollectionRule.prototype.allowErrors = function (doc, userId, fieldNames, modifier) {

@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Helper methods to make allow/deny collection rules more powerful."
-  , version: "0.1.1"
+  , version: "0.1.2"
   , name: "cwohlman:collection-rules"
   , git: "https://github.com/cwohlman/meteor-collection-rules.git"
 });
